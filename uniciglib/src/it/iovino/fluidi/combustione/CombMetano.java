@@ -41,8 +41,9 @@ double  volumi_totali;
 private double massa_molare_fumi;
 private double portata;
 private double calore;
-private Fluido fumo;
+private Miscela fumo;
 private double ecc_aria;
+private double indice_aria;
 public static final double pot_cal_inf=34.0;// MJ/m3	
 
 public Fluido CombustioneStech(){
@@ -60,17 +61,18 @@ public Fluido CombustioneStech(){
 }
 /**
  * Creo un Fluido (implemetnazione di Miscela) 
- * @param ecc_aria_percent
+ * @param ecc_aria
  * @return
  */
-public Fluido Combustione(double ecc_aria_percent){
+public Fluido Combustione(double ecc_aria){
 	//double moli=massa/MetanoCH4.getInstance().massamolare;
-	this.ecc_aria=ecc_aria_percent;
-	double p=ecc_aria_percent/100;
+	this.ecc_aria=ecc_aria;
+	double ecc_aria_perc=ecc_aria/100;
+	indice_aria=1+ecc_aria_perc;
 	volumi_h20=2;
 	volumi_co2=1;
-	volumi_o2=2*p;
-	volumi_n2=7.52+7.52*p;
+	volumi_o2=2*ecc_aria_perc;
+	volumi_n2=7.52+7.52*ecc_aria_perc;
 	volumi_totali=volumi_h20+volumi_co2+volumi_o2+volumi_n2;
 	
 	PairMoliFluido vapore=new PairMoliFluido(volumi_h20,h20);
@@ -99,7 +101,7 @@ public Fluido Combustione(double ecc_aria_percent){
  * Crero un Miscela e restituisco una portatat:
  * Utilizzo chiamare la funzione, poi tramite getFumo ottenere il Fluido;
  * 
- * @param potenza
+ * @param potenza kw
  * @param ecc_aria
  * @return
  */
@@ -110,7 +112,10 @@ public double Portata(double potenza, double ecc_aria){
 	 */
 	double m3=potenza/(1000*pot_cal_inf);
 //double m3=1;
-	double p=ecc_aria/100;
+	
+	this.ecc_aria=ecc_aria;
+	double ecc_aria_perc=ecc_aria/100;
+	indice_aria=1+ecc_aria_perc;
 	// Sono le frazioni di volume dei compnenti: 
 	// infatti la legge dei gas è p*v=n RT
 	// quindi a uguali volumi è dato lo stesso numero di molecole,
@@ -120,8 +125,8 @@ public double Portata(double potenza, double ecc_aria){
 	// Ovvero 101
 	volumi_h20=2*m3;
 	volumi_co2=1*m3;
-	volumi_o2=2*p*m3;
-	volumi_n2=(7.52+7.52*p)*m3;
+	volumi_o2=2*ecc_aria_perc*m3;
+	volumi_n2=(7.52+7.52*ecc_aria_perc)*m3;
 	// su fumi umidi   
 	//7.52+7.52p+2p+1+2=tot    9.52p=tot-10.52   p=(tot-10.52)/9.52 
 	//Volumi totatli: ovvero la somma delle frazioni di volumi "specifici"
@@ -162,8 +167,9 @@ public double ConbustioneConCO2(double co2_secco_reale ){
  */
 	double m3=1;
 	double tot=1/(co2_secco_reale/100) ;
-	double p=(tot-8.52)/9.52;
-	this.ecc_aria=p*100;
+	double ecc_aria_perc=(tot-8.52)/9.52;
+	this.ecc_aria=ecc_aria_perc*100;
+	indice_aria=1+ecc_aria_perc;
 	// Sono le frazioni di volume dei compnenti: 
 	// infatti la legge dei gas è p*v=n RT
 	// quindi a uguali volumi è dato lo stesso numero di molecole,
@@ -173,8 +179,8 @@ public double ConbustioneConCO2(double co2_secco_reale ){
 	// Ovvero 101
 	volumi_h20=2*m3;
 	volumi_co2=1*m3;
-	volumi_o2=2*p*m3;
-	volumi_n2=(7.52+7.52*p)*m3;
+	volumi_o2=2*ecc_aria_perc*m3;
+	volumi_n2=(7.52+7.52*ecc_aria_perc)*m3;
 	// su fumi umidi   
 	//7.52+7.52p+2p+1+2=tot    9.52p=tot-10.52   p=(tot-10.52)/9.52 
 	// su fumi secchi   
@@ -212,7 +218,7 @@ public double ConbustioneConCO2(double co2_secco_reale ){
  * Calcolo la composizione fumi e la portata massica riferita al volume 
  * di metano calcolato in base alla potenza del generatore
  * @param co2_secco_reale
- * @param potenza
+ * @param potenza kW
  * @return Portata massica fumi
  */
 public double PortataConCO2(double co2_secco_reale ,double potenza){
@@ -222,8 +228,9 @@ public double PortataConCO2(double co2_secco_reale ,double potenza){
 	double m3=potenza/(1000*pot_cal_inf);
 //double m3=1;
 	double tot=1/(co2_secco_reale/100) ;
-	double p=(tot-8.52)/9.52;
-	this.ecc_aria=p*100;
+	double ecc_aria_perc=(tot-8.52)/9.52;
+	this.ecc_aria=ecc_aria_perc*100;
+	indice_aria=1+ecc_aria_perc;
 	// Sono le frazioni di volume dei compnenti: 
 	// infatti la legge dei gas è p*v=n RT
 	// quindi a uguali volumi è dato lo stesso numero di molecole,
@@ -233,8 +240,8 @@ public double PortataConCO2(double co2_secco_reale ,double potenza){
 	// Ovvero 101
 	volumi_h20=2*m3;
 	volumi_co2=1*m3;
-	volumi_o2=2*p*m3;
-	volumi_n2=(7.52+7.52*p)*m3;
+	volumi_o2=2*ecc_aria_perc*m3;
+	volumi_n2=(7.52+7.52*ecc_aria_perc)*m3;
 	// su fumi umidi   
 	//7.52+7.52p+2p+1+2=tot    9.52p=tot-10.52   p=(tot-10.52)/9.52 
 	// su fumi secchi   
@@ -264,6 +271,13 @@ public double PortataConCO2(double co2_secco_reale ,double potenza){
 	 * Calcola portata massica fumi
 	 */
 	return volumi_totali*fumo.MassaVolumica(PressioneNormale, TemperaturaNormale);
+}
+
+
+public double pressioneParzialeVapore(double press){
+	if(fumo==null)
+		return -1;
+	return fumo.PressioneParzial(h20, press);
 }
 
 /**
@@ -358,6 +372,9 @@ public double getMassa_molare_fumi() {
 }
 public static double getPotCalInf() {
 	return pot_cal_inf;
+}
+public double getIndice_aria() {
+	return indice_aria;
 }
 
 

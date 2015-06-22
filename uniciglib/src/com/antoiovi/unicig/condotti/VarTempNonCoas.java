@@ -5,7 +5,9 @@
  */
 package com.antoiovi.unicig.condotti;
 import com.antoiovi.unicig.tubi.Tubo;
+
 import it.iovino.fluidi.Fluido;
+import it.iovino.utilita.Mylogger;
 
 /**
  *
@@ -22,7 +24,7 @@ public class VarTempNonCoas  {
     protected double KR;// Fattore raffreddamento 
     protected double Tfu;
     protected double Tfm;
-    
+   Mylogger logger; 
     
     
 /**
@@ -59,25 +61,48 @@ public class VarTempNonCoas  {
     double FattAttrLiscio=velflu.getFattAttrLiscio();
     double Ta=Tamb;
     double Tfi=Tinput;
+    if(logger!=null)
+    	logger.appendMessage(Mylogger.FINEST, String.format("\n\tVARTEMPNONCOAS: " ));
         // Calcolo coefficiente liminare
         // calcola il numero di nusselt (formula 20)
         double psipsi0 = FattAttrRuvido / FattAttrLiscio;
         double a = Math.pow(psipsi0, 0.67);
         double b = Math.pow(NumReynold, 0.75);
         NNusselt = a * 0.0354 * (b - 180);
-        CoefLiminI = FluidoI.CondicTermica(Tfi) * NNusselt / Dh;
+        double conducterm=FluidoI.CondicTermica(Tfi);
+        CoefLiminI =  conducterm* NNusselt / Dh;
+        if(logger!=null)
+        	logger.appendMessage(Mylogger.FINEST, 
+        			String.format("\n\t\t N Nusselt %1.3f  conducibilita termica fluido %1.4f Coefficiente liminare interno %1.3f "
+        					,NNusselt,conducterm,CoefLiminI));
         // Calcolo coefficiente globale di scambio termico
         k = (1 / CoefLiminI) + (((1 / CoefLimE) * Dh / Dhe) + RT) * SH;
         k = 1 / k;
+        if(logger!=null)
+        	logger.appendMessage(Mylogger.FINEST,String.format("\n\t\t Coefficinte globale scambio termico %1.4f  "
+        			+ "SH fattore correzione temperatura %1.2f    Dh/Dhe %1.3f ",k,SH,(Dh/Dhe) ));
          //Fattore di raffreddamento formula 24
-        KR =( U * k * Lungh )/ (M1 * FluidoI.CapTerm(Tfi));
+        double capterm=FluidoI.CapTerm(Tfi);
+        KR =( U * k * Lungh )/ (M1 *capterm );
+        if(logger!=null)
+        	logger.appendMessage(Mylogger.FINEST,
+        			String.format("\n\t\tFattore raffreddamento %1.4f Perimetro %1.3f Lunghezza %1.2f Portata massica %1.4f"
+        					+ "\n\t\t Capacita termica fluido %f temperatura iniziale %1.3f",
+        					KR,U,Lungh,M1,capterm,Tfi));
          // Temperatura uscita caso non coassiale, formula 26
         Tfu = Ta + (Tfi - Ta) * Math.exp(-1 * KR);
     // Temperatura media nel condotto caso non coassiale formula 29
          Tfm=Ta+(Tfi-Ta)*(1-Math.exp(-1 * KR))/KR;
+         if(logger!=null)
+         logger.appendMessage(Mylogger.FINEST,String.format("\n\t Temperatura media %1.2f Temperatura uscita %1.2f",Tfm,Tfu));
+         return;
      }
 
-    public double getTfu() {
+    public void setLogger(Mylogger logger) {
+	this.logger = logger;
+}
+
+	public double getTfu() {
         return Tfu;
     }
 
@@ -88,11 +113,17 @@ public class VarTempNonCoas  {
     public double getNNusselt() {
         return NNusselt;
     }
-
+/**
+ * 
+ * @return Coefficiente globale di scambio termico
+ */
     public double getK() {
         return k;
     }
-
+/**
+ * 
+ * @return Fattore di raffreddamento
+ */
     public double getKR() {
         return KR;
     }

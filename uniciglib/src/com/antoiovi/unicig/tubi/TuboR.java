@@ -23,7 +23,12 @@ public class TuboR extends TuboAbstract{
 	}
 
 
-    public double getLato_lung() {
+    public TuboR() {
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public double getLato_lung() {
         return lato_lung;
     }
 
@@ -86,7 +91,7 @@ public class TuboR extends TuboAbstract{
 
  	@Override
  	public void setSpessore(double spess) {
- 		// TODO Auto-generated method stub
+ 		spessore=spess;
  		
  	}
 

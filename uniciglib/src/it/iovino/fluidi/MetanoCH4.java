@@ -1,5 +1,9 @@
 package it.iovino.fluidi;
 
+import it.iovino.fluidi.Miscela.Frazione;
+
+import java.util.List;
+
 public class MetanoCH4 extends AbstractFluido {
 public final double massamolare=16.04;//g/mole 
 private static MetanoCH4 instance=null;
@@ -19,6 +23,18 @@ public static MetanoCH4 getInstance() {
 	public double MassaMolare() {
 		// TODO Auto-generated method stub
 		return massamolare;
+	}
+
+	@Override
+	public List<Frazione> getFrazioni_ponderali() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Frazione> getFrazioni_molari() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -23,4 +23,8 @@ public double getCO2percentPmin();
 	
 public double getEccariaPmax();
 public double getEccariaPmin();
+
+public double getIndiceAriaPmax();
+public double getIndiceAriaPmin();
+
 }

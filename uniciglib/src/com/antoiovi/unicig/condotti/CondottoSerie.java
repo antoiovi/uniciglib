@@ -23,8 +23,12 @@ public class CondottoSerie implements Condotto{
     double Haltezza;// Altezza totale condotto H=0 tubo orizzontele
     List<Condotto> condotti;// Più tubi in serie per considerare i cambi di sezione
     protected double Patm;
-            
-    protected double CoefLimE;
+    double massvolumaria;      
+    public double getMassvolumaria() {
+		return massvolumaria;
+	}
+
+	protected double CoefLimE;
     protected double M1;// Portata massica fluido interno
     protected double Ta;//Temperatura ambiente
     protected double Tfi;//Temperatura iniziale
@@ -174,5 +178,47 @@ public class CondottoSerie implements Condotto{
 	public void setFluidoI(Fluido fluidoi, double m2, double T2) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public double Area() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String Forma() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double Ti() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double Dh() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double Calcola_d_P() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double getPs() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double getWm() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

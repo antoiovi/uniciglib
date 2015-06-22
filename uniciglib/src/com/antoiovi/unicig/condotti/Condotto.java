@@ -24,12 +24,20 @@ public interface Condotto {
     public double M1();
     // ottiene la velocità media [m/s]
     public double Wm();
+    public double getWm();
+    // Ottine  la temperatura media
+    public double Ti();
     // Ottine  la temperatura media
     public double Tm();
     // Ottine la tempertura di uscita
     public double Tu();
     // Ottine la pressione statica (B = +1 o -1)
     public double Ps(double B);
+    /**
+     * 
+     * @return Pressione statica 
+     */
+    public double getPs();
     // Pressione effettiva: calcolata in base alle pressioni dei 
     // condotti superiori; se sopra ho solo un comignolo metto la perdita del comignlo 
     // in negativo
@@ -37,6 +45,7 @@ public interface Condotto {
     // Restituisce la pressone effettiva, già calcolata
     public double Peff();
     // Calcola le perdie di carico
+    public double Calcola_d_P();
     public double d_P();
     //restitusisce una perdita di carico in baese ad una csi 
     public double d_P(double csi);
@@ -54,16 +63,24 @@ public interface Condotto {
     // Lunghezza(=uguale a lunghezza tubo)
     public double Lung();
     // Portata aria interruttore tiraggio
+    @Deprecated
     public double getMa();
     // Calcola e restituisce massa aria interruttore tiraggio
+    @Deprecated
     public double MaIntTir(double csi_i,double csi_d,double Ai,double Ad);
     // Aggiunge un fluido con massa mw e temp T2 , ricalocla la temperatura
     public void addFluido(Fluido f2,double m2, double T2);
     // UTILIZZATI PER CONDOTTI COASSIALI
     // imposta il fluido interno e ricalcola temperature
     
+    public double Area();
+    public double Dh();
+    public String Forma();
+    
     Condotto condottoi();
     Condotto condottoe();
+    @Deprecated
+	double getMassvolumaria();
     
     
 }

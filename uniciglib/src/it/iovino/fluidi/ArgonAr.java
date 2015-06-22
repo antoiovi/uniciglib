@@ -6,6 +6,8 @@
 
 package it.iovino.fluidi;
 
+import it.iovino.fluidi.Miscela.Frazione;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,5 +49,17 @@ private static ArgonAr instance=null;
     public String toString() {
         return "Ar"; //To change body of generated methods, choose Tools | Templates.
     }
+
+	@Override
+	public List<Frazione> getFrazioni_ponderali() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Frazione> getFrazioni_molari() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

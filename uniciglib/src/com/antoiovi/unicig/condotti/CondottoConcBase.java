@@ -25,6 +25,11 @@ import java.util.List;
 public class CondottoConcBase implements Condotto{
 double Tamb;// Tempereatura ambiente
 double patm;// Pressione atmosferica
+double massvolumaria;
+public double getMassvolumaria() {
+	return massvolumaria;
+}
+
 double tempiniz_condint,tempmed_condint; // TemperaturaInziale Iniziale , e TemperaturaMedia  condotto interno 
 double tempiniz_condest,tempmed_condest;// TemperaturaInziale Iniziale , e TemperaturaMedia  condotto esterno
 double massa_condint,massa_condest;// Massa fluido condotto interno e condotto esterno
@@ -279,6 +284,48 @@ public void addFluido(Fluido f2,double m2, double T2){
 
 	@Override
 	public double MaIntTir(double csi_i, double csi_d, double Ai, double Ad) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double Area() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String Forma() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double Ti() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double Dh() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double Calcola_d_P() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double getPs() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double getWm() {
 		// TODO Auto-generated method stub
 		return 0;
 	}

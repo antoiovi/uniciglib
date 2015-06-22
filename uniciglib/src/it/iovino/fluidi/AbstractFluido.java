@@ -63,7 +63,7 @@ protected static  double a;
 protected static  double b;
 protected static  double c;
 protected static  double d;
-
+protected static  double e;
 /* Calore specifico, conducibilità termica, viscosità dinamica dipendono solo dalla temperatura
  * 
  * 
@@ -176,6 +176,29 @@ public void CreaMap(Map<Fluido, Double> map, Double val, List frazioni) {
     public double ViscositaDinamica(double Temperatura) {
         return getPropieta(VISCOSITADINAMICA,Temperatura)*expViscDin;
     }
+    /**
+     *  Formula di Sutherland per viscosità dinamica per elementi base
+     * 12/06/2015 
+     * 
+     * */
+    double mu0;
+    double T0;
+    double C;
+    
+	 protected double Sutherland(double temper){
+      
+      double T0_3_2=Math.pow(T0,3.0/2.0);
+      double lambda=mu0*(T0+C)/T0_3_2;
+     return lambda*Math.pow(temper,3.0/2.0)/ (temper+C);
+   
+       
+      
+    }
+    public double lamdaSutherland(){
+    	double T0_3_2=Math.pow(T0,3.0/2.0);
+        double lambda=mu0*(T0+C)/T0_3_2;
+        return lambda;
+    }
     
 // 6 -viscosita cinematica
 @Override
@@ -271,9 +294,18 @@ public void CreaMap(Map<Fluido, Double> map, Double val, List frazioni) {
     public double getPropieta(int PROPIETA,double Temperatura){
         int rowbefore=this.getRowBeforeTemperature(Temperatura);
         int rowafter=this.getRowAfterTemperature(Temperatura);
+       try{
         if(rowbefore==rowafter){
-            return propieta[rowafter][PROPIETA];
+        	if(rowafter==propieta.length)
+        		rowafter--;
+        	      	     return propieta[rowafter][PROPIETA];
         }
+        }catch(java.lang.ArrayIndexOutOfBoundsException e){
+        	System.out.println(String.format("Miscelaa.getPropieta: errore indexaoutBpund:"
+        			+ "inice[rowafter][] %d indice[][PROPIETA] %d \t limiti [%d][%d] ",rowafter,PROPIETA,propieta[0].length, propieta.length));
+        	 
+        }
+        
         return Interpolation(
                 propieta[rowbefore][TEMPERATURA],propieta[rowafter][TEMPERATURA],
                 propieta[rowbefore][PROPIETA],propieta[rowafter][PROPIETA],

@@ -22,6 +22,10 @@ public class TuboC extends TuboAbstract{
 		this.diam_int=diam_int;
 	}
 
+	public TuboC() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public double getDiam_int() {
         return diam_int;
     }
@@ -83,6 +87,7 @@ public class TuboC extends TuboAbstract{
 
 	@Override
 	public void setSpessore(double spess) {
+		diam_est=diam_int+2*spess;
 		// TODO Auto-generated method stub
 		
 	}

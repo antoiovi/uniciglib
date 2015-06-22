@@ -13,11 +13,17 @@ package com.antoiovi.unicig.tubi;
  */
 abstract class TuboAbstract implements Tubo {
 protected double Lung;
+/**
+ * Resistenza termica 
+ * m2/(K W)
+ */
 protected  double Resterm;
 protected double Rug;
 
 
-
+public TuboAbstract(){
+	super();
+}
 
      public TuboAbstract(double lung, double resterm, double rug) {
 	super();

@@ -328,4 +328,19 @@ Den=M*cp;
    return Num/Den;
     
 }
+/**
+ * 0 tutto esterno
+ * 100 tutto interno
+ * Se la CCR è disposta internamente all’edificio porre ae =aemin = 8,0; 
+ * se la CCR è disposta esternamente all’edificio porre  ae =aemax = 23,0
+ * @param percentContEsterno 0-100
+ * @return
+ */
+public static double CoeffLiminareEst(double percentContEsterno){
+	percentContEsterno=percentContEsterno<0?0:(percentContEsterno>100?100:percentContEsterno);
+	double RS=percentContEsterno/=100;
+	double alfa_e=RS*23-(1-RS)*8;
+	alfa_e=alfa_e<8?8:(alfa_e>23?23:alfa_e);
+	return alfa_e;
+}
 }//formule

@@ -5,6 +5,10 @@
  */
 package it.iovino.fluidi;
 
+import it.iovino.utilita.Emptylog;
+import it.iovino.utilita.Mylogger;
+import it.iovino.utilita.SystemLogger;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,17 +24,32 @@ import java.util.Map;
  *
  * @author antoiovi
  */
-public class Miscela implements Fluido {
+public class Miscela extends AbstractFluido {
 
     HashMap<Fluido, Double> map_p;// map ponderali elemneti base
     HashMap<Fluido, Double> map_m;// map_m molarielementi base
     List<Frazione> frazioni_ponderali;
-    List<Frazione> frazioni_molari;
-    double massamolareapparente;
+    public List<Frazione> getFrazioni_ponderali() {
+		return frazioni_ponderali;
+	}
+	public List<Frazione> getFrazioni_molari() {
+		return frazioni_molari;
+	}
 
+
+
+
+
+	List<Frazione> frazioni_molari;
+    double massamolareapparente;
+Mylogger logger=   Emptylog.getInstance();
+    
     
 
-    /**
+    public void setLogger(Mylogger logger) {
+	this.logger = logger;
+}
+	/**
      * Creo la miscela passando una lista di coppie <massa-fluido>
      *
      * @param pair_massa_fluido
@@ -54,7 +73,10 @@ public class Miscela implements Fluido {
             Fluido f = pmf.fluido;
             // Creo una frazione ponderale come coppia frazioneponderale-Fluido
             Frazione frazpond = new Frazione(m / massaTot, f);
+            if(frazpond.frazione>0.01)
             frazioni_ponderali.add(frazpond);
+            else
+            	pair_massa_fluido.remove(frazpond);
         }
    // CREO LE FRAZIONI MOLARI come lista di oggetti 
         //       FrazioneMolare= coppia frazionemolare-fluido
@@ -80,17 +102,20 @@ public class Miscela implements Fluido {
             PairMoliFluido molefluido = (PairMoliFluido) i.next();
             double frazionemolare = molefluido.moli / molitotali;
             Frazione frazmol = new Frazione(frazionemolare, molefluido.fluido);
+            if (frazmol.frazione>0.01)
             frazioni_molari.add(frazmol);
         }
-
+   
 /** CREO HASMMAP CON FRAZIONI PONDERALI ELEMENTI BASE
  * 
  */
         map_p = new HashMap<Fluido, Double>();
         // Chianmo creamap, che recursivamente scandaglia l'albero fino agli 
         //      elementi base
+        logger.appendMessage(Mylogger.FINEST, "Crea map frazioni ponderali");
         this.CreaMap(map_p, 1.0,frazioni_ponderali);
-        // Creo la mappa frazioni molari elementi base     
+        // Creo la mappa frazioni molari elementi base  
+        logger.appendMessage(Mylogger.FINEST, "Crea map frazioni molari");
         map_m = new HashMap<Fluido, Double>();
         this.CreaMap(map_m, 1.0,frazioni_molari);
 
@@ -171,11 +196,13 @@ public class Miscela implements Fluido {
        
         
         // 3 CREO HASMMAP CON FRAZIONI MOLARI ELEMENTI BASE
+        logger.appendMessage(Mylogger.FINEST, "Crea map frazioni molari");
         map_m = new HashMap<Fluido, Double>();
         /* 3 a- Chiamo fluido.CreaMap, che recursivamente scandaglia l'albero fino agli 
               		elementi base*/
         this.CreaMap(map_m, 1.0,frazioni_molari);
-        // Creo la mappa frazioni ponderali elementi base     
+        // Creo la mappa frazioni ponderali elementi base  
+        logger.appendMessage(Mylogger.FINEST, "Crea map frazioni ponderali");
         map_p = new HashMap<Fluido, Double>();
         this.CreaMap(map_p, 1.0,frazioni_ponderali);
 // CALCOLO LA MASSA MOLARE APPARENTE
@@ -280,7 +307,11 @@ public class Miscela implements Fluido {
     public double ViscCin(double Pressione, double Temperatura) {
         double vd=0;
         for (Map.Entry<Fluido, Double> entry : map_p.entrySet()) {
-             vd+=entry.getKey().ViscCin(Pressione, Temperatura)*entry.getValue();
+        	Fluido f=entry.getKey();
+        	double p=entry.getValue();
+        	double v=entry.getKey().ViscCin(Pressione, Temperatura);
+        	logger.appendMessage(Mylogger.FINEST, String.format("fluido %s massa %1.3f  visc cinematica %1.3f \n",f,p,v));
+             vd+=v*p;
         }
         return vd;
     }
@@ -327,12 +358,14 @@ public class Miscela implements Fluido {
             fluido.CreaMap(map, val * frazmass);
 
         }*/
-    	Iterator iter_frazione = frazioni.iterator();
+     	Iterator iter_frazione = frazioni.iterator();
         while (iter_frazione.hasNext()) {
             Frazione frazione = (Frazione) iter_frazione.next();
             Fluido fluido = frazione.fluido;
+            String message="Miscela creamap "+" Fluido  "+fluido+" \n "+fluido.toString();
+			logger.appendMessage(Mylogger.FINEST, message);
             double frazmass = frazione.frazione;
-            fluido.CreaMap(map, val * frazmass,frazioni);
+            fluido.CreaMap(map, val * frazmass,fluido.getFrazioni_ponderali());
         }
 
     }
@@ -373,7 +406,23 @@ String formula="(";
             entry.getKey().toString()+", ";
         }
         formula+=") Moli; ";
-                return formula; //To change body of generated methods, choose Tools | Templates.
+                return formula; 
     }
-
+    
+public double getFrazioneMolare(Fluido f){
+ Double mol=map_m.get(f);
+ if(mol!=null)
+	 return mol;
+ else
+	return 0;
+	
+}
+public double getFrazionePonderale(Fluido f){
+	 Double mass=map_p.get(f);
+	 if(mass!=null)
+		 return mass;
+	 else
+		return 0;
+		
+	}
 }

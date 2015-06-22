@@ -4,6 +4,8 @@
  */
 package it.iovino.fluidi;
 
+import it.iovino.fluidi.Miscela.Frazione;
+
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +27,8 @@ public interface Fluido {
      // Rapporto tra diffusdivita cinematica e diffudsivita termica (adimensionale)
   public double NumeroPrandtl(double Pressione,double Temperatura);
   public void CreaMap(Map<Fluido,Double> map,Double val,List frazioni);
-  
+  public List<Frazione> getFrazioni_ponderali();
+	public List<Frazione> getFrazioni_molari();
   
   
   
