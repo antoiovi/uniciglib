@@ -61,7 +61,7 @@ public class AnidrideCO2 extends AbstractFluido {
 			/**
 			 * cp/R R[J/(kg K)]      cp =cp/R x R  [J/(kg K)]
 			 */
-			return x * R;
+			return x*1000;
 
 		}
 	    /**

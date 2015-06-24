@@ -74,7 +74,7 @@ double x=a+b*Temp+c*Math.pow(Temp,2.0)+d*Math.pow(Temp, 3.0);
 /**
  * cp [J/K kg]
  */
-return x*R;
+return x*R/10;
 
 }
 
@@ -106,6 +106,13 @@ for(int i=0;i<coeff.length;i++){
 return res*LAMBDA;
 }
 
+ 
+
+@Override
+public String toString() {
+	 
+	return "Aria_base";
+}
 
 /**
 * vISCOSITA DINAMICA fORMULA DI sUTHERLKAN
