@@ -59,20 +59,20 @@ private static OssigenoO2 instance=null;
  public double MassaMolare() {
     return massamolare;
     }
- 
-    @Override
+    /**
+	 * PER L'OSSIGENO FORMULA TRATTA DA DISPENSE
+	 * Formala tratta da Termodinamica e trasmissione del calore Ca
+	 * cp/R [J/K kg]
+	 */
+   @Override
 	public double CapTerm(double Temp) {
 
-		/**
-		 * PER L'OSSIGENO FORMULA TRATTA DA DISPENSE
-		 * Formala tratta da Termodinamica e trasmissione del calore Ca
-		 * cp/R [J/K kg]
-		 */
+		
 		  a=0.36256*10;
-       b=-0.18782*1e-2;
-       c=0.70555*1e-5;
-       d=-0.67635*1e-8;
-       e=0.21556*1e-11;
+       b=-0.18782e-2;
+       c=0.70555e-5;
+       d=-0.67635e-8;
+       e=0.21556e-11;
        
 		double x = a + b * Temp + c * Math.pow(Temp, 2) + d * Math.pow(Temp, 3)
 				+ e * Math.pow(Temp, 4);
@@ -82,7 +82,23 @@ private static OssigenoO2 instance=null;
 		return x * R;
 
 	}
-	
+    /**
+     * Polinomio tratto da S.C. SAXENA : University of Illinois, 1970
+     */
+    @Override
+    public double CondicTermica(double t) {
+    	 
+   	 double a1=0.09156;
+     double b1=0.6162*1e-3;
+     double c1=-0.01062*1e-6;
+     double d1=0.02535*1e-9;
+		double x = a1 + b1 * t +c1 * Math.pow(t, 2.0)
+				+d1*Math.pow(t, 3.0);
+		
+		return x/10  ;
+    }
+
+    
 	@Override
 	public double ViscositaDinamica(double temperatura){
 	  return Sutherland(temperatura);

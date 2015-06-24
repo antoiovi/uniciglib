@@ -25,6 +25,7 @@ public static final double massamolare=28.96;
 public static final double R = FluidiMath.Ru/massamolare;
 public static  final double Tcritica=132.52;
 public   static final double Pcritica=3.78502e-6;
+public   static final double ro_critica=313.0;//kg/m3
 
 
 public   Aria_base(){
@@ -63,17 +64,17 @@ public double MassaMolare() {
 }
 
 
- 
-public double CapTerm_(double Temp) {
+@Override 
+public double CapTerm(double Temp) {
 String s=String.format("%1.3f\t%1.3f\t%e\t%e",a,b,c,d);
 /**
 * cp/R [J/K kg]
 */
-double x=a+b*Temp+c*Math.pow(Temp,2)+d*Math.pow(Temp, 3);
+double x=a+b*Temp+c*Math.pow(Temp,2.0)+d*Math.pow(Temp, 3.0);
 /**
  * cp [J/K kg]
  */
-return x*1000/R;
+return x*R;
 
 }
 
@@ -83,13 +84,12 @@ return x*1000/R;
 * 15/06/2015
 * 
 **/
- 
- 
-public double CondicTermica_(double Temper) {
-	double coeff[]={33.9729,-164.703,262.1085,-21.5346855,-443.456,607.3396,-368.79,111.2967,-13.4122};
-	double espon[]={   -1   ,-2/3, -1/3, 0, 1/3,2/3,1, 4/3,5/3};
+ @Override
+public double CondicTermica(double Temper) {
+	double coeff[]={33.97299025,-164.702679,262.108546,-21.5346955,-443.455815,607.339582,-368.790121,111.296674,-13.4122465};
+	double espon[]={   -1.0   ,-2.0/3.0, -1.0/3.0, 0.0, 1.0/3.0,2.0/3.0,1.0, 4.0/3.0,5.0/3.0};
 
-	double LAMBDA=4.358*e-3;
+	double LAMBDA=4.358e-3;
 double Tr=Temper/Tcritica;
 double T_exp[]=new double[espon.length];
 for(int x=0;x<espon.length;x++){

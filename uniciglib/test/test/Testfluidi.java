@@ -14,7 +14,7 @@ OssigenoO2 o2=OssigenoO2.getInstance();
 AnidrideCO2 co2=AnidrideCO2.getInstance();
 VaporeH2O h2o=VaporeH2O.getInstance();
 Aria_base aria=new Aria_base();
-double temper=298.0;
+double temper=373.0;
 double patm=101105.0;
 
 public static void main(String[] args){
@@ -23,7 +23,7 @@ public static void main(String[] args){
 }
 	public void test(){
 		
-		
+		System.out.println("Temperatura "+temper+" K  "+(temper-273.0)+" °C");
 		printFluido(o2);
 		printFluido(n2);
 		printFluido(co2);

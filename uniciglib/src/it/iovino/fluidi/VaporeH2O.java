@@ -12,10 +12,10 @@ public class VaporeH2O extends AbstractFluido {
 	// coefficienti del polinomio di Taylor per calore specifico (non usati se uso tabella)
 	//INUTILIZZATI
 		a=0.40701*10;
-    	b=-0.11084*10e-2;;
-    	c=0.41521*10e-5;
-    	d=-0.29637*10e-8;
-    	e=0.80702*10e-12;
+    	b=-0.11084*1e-2;;
+    	c=0.41521*1e-5;
+    	d=-0.29637*1e-8;
+    	e=0.80702*1e-12;
 // moltiplicatore per valori colonna presi da tabella
 	expDiffTerm=1e-5;
 	expViscDin=1e-5;
@@ -50,8 +50,8 @@ public double CapTerm(double Temp) {
 /**
 	 * cp/R [J/K kg]
 	 */
-	double x = a + b * Temp + c * Math.pow(Temp, 2) + d * Math.pow(Temp, 3)
-			+ e * Math.pow(Temp, 4);
+	double x = a + b * Temp + c * Math.pow(Temp, 2.0) + d * Math.pow(Temp, 3.0)
+			+ e * Math.pow(Temp, 4.0);
 	/**
 	 * cp [J/K kg]
 	 */
