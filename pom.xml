@@ -1,0 +1,35 @@
+<project>
+      <modelVersion>4.0.0</modelVersion>
+      <groupId>com.antoiovi</groupId>
+      <artifactId>uniciglib</artifactId>
+      <version>1</version>
+   <dependencies>
+   
+   
+ <dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>4.12</version>
+		<scope>test</scope>
+	</dependency>
+
+   </dependencies>
+  
+   <build>
+   <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+
+             <manifest>
+                <addClasspath>true</addClasspath>
+                <classpathPrefix>lib/</classpathPrefix>
+			   </manifest>
+			</archive>
+			</configuration>
+		 </plugin> 
+   </plugins>
+   </build>
+    </project>
