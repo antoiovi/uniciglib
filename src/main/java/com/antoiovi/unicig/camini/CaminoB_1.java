@@ -230,8 +230,9 @@ logger.appendMessage(REPORT,message);
 	 logger.appendMessage(REPORT, String.format("\nMassa aria  %1.3f",maria));
  
 	 for(int count=0;count<100 ;count++){
-		 static final int LOG_LEVEL=REPORT;
-		 //static final int LOG_LEVEL=Mylogger.INFOT;
+		 logger.appendMessage(REPORT, String.format("\n Iterazione %d",count));
+		//int LOG_LEVEL=REPORT;
+		  int LOG_LEVEL=Mylogger.INFO;
 		 logger.appendMessage(LOG_LEVEL, "\n>Iterazione numero:"+count);
 		 logger.appendMessage(LOG_LEVEL, "\n >Canale :calcolo termico ");
 		 
@@ -248,28 +249,24 @@ logger.appendMessage(REPORT,message);
 		condotto.setData(Patm, canale.M1(), temperaturaambiente, canale.Tu(), canale.fl_int());
 		
 		
-		logger.appendMessage(Mylogger.INFO, "\n > Condotto: calcola pressioni:");
-		logger.appendMessage(Mylogger.GRAVE, "\n TEST LOG GRAVE:");
-		
-		
-	 
-		
+		logger.appendMessage(LOG_LEVEL,"\n condotto: calcola pressioni:");
+				
 		//condotto.Calcola_d_P();// Calcola perdite statiche e concentrate
 	//	ps_cond = condotto.Ps(1);// calcola la pressione statica 
 		
 		 
-		logger.appendMessage(Mylogger.INFO, "\n \t > calcola perdita di carico comignolo:");
+		logger.appendMessage(LOG_LEVEL,"\n \t > calcola perdita di carico comignolo:");
 		dp_com = condotto.d_P(csi_comign);
 		
 		peff_cond = condotto.Peff(-dp_com);// Chiama calcola_d_P(); e ps
 		ps_cond=condotto.getPs();
 		dp_con=condotto.d_P();
 		
-		logger.appendMessage(Mylogger.INFO, "\n > Canale: calcola pressioni:");
+		logger.appendMessage(LOG_LEVEL,"\n > Canale: calcola pressioni:");
 		 
 		
 		
-		/**********************************************************
+		
 		//canale.Calcola_d_P();
 		peff_ca_base = canale.Peff(peff_cond);// Chiama calcola d_P()
 		//peff_ca=canale.Peff(0);// Chiama calcola d_P()
@@ -282,17 +279,20 @@ logger.appendMessage(REPORT,message);
 		logger.appendMessage(Mylogger.INFO,String.format("\n>Verifica convergenza :\n\t pressione effettiva base canale fumo %1.2f"
 				+ " iterazione precedente %1.2f  differenza %1.2f", peff_ca_base,peff_prev,test));
 		if(test<0.1){
-			logger.appendMessage(Mylogger.INFO,"\n > CONVERGENZA.........iterazione --> "+(int)(count+1));
+			logger.appendMessage(LOG_LEVEL,"\n > CONVERGENZA.........iterazione --> "+(int)(count+1));
 			break;
 		}
 		peff_prev=peff_ca_base;
-		******************************************/
+		
 		
 		
 	/*	logger.appendMessage(Mylogger.INFO, String.format(
 				"\n PRESSIONE EFFETTIVA CONDOTTO %1.3f  Differenze rispetto a iterazione precedente =%1.3f", peff_ca_base,peff_ca_base-peff_prev));
 	 */
-	 /**************************
+		
+		
+		
+		/*******************************************
 		logger.appendMessage(Mylogger.INFO, String.format("\n > Calcolo aria parassita...." ));
 		maria = presaaria.MaIntTir(peff_ca_base, portatafumo,
 				Patm, temper_int);
@@ -301,8 +301,7 @@ logger.appendMessage(REPORT,message);
 					"\n Massa aria parassita < 0 ...modificre parametri" ));
 			return;
 		}
-	 
-	 ********************/
+	 ****************************************************/
 	  
 	 }// ciclo iterazione
  

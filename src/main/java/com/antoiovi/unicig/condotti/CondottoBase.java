@@ -181,13 +181,15 @@ public   void setLogger(Mylogger logger) {
     }
 
     public void CalcolaTemper() {
+		// int LOG_LEVEL=Mylogger.FINEST;
+		int LOG_LEVEL=Mylogger.OFF;
         // primo ciclo metto Tm=T
-    	logger.appendMessage(Mylogger.FINE, String.format("\nCALCOLA TEMPERATURA start:\n\t Patm %1.0f Portata %1.3f  Temp %1.3f ", Patm,M1,temperIntMedia));
+    	logger.appendMessage(LOG_LEVEL, String.format("\nCALCOLA TEMPERATURA start:\n\t Patm %1.0f Portata %1.3f  Temp %1.3f ", Patm,M1,temperIntMedia));
         velocitaFluido.Calcola(Patm, M1, temperIntMedia, fluidoInt, tubo);
         vartempnoncoas.Calcola(tubo, M1, fluidoInt, coeffLimEst, velocitaFluido, temperEst, temperIntIniz);
        
         temperIntMedia = vartempnoncoas.getTfm();
-        logger.appendMessage(Mylogger.FINE, String.format("\nCALCOLA TEMPERATURA end: Temp media: %1.2f Portata %1.3f  Velocita %1.3f ",  temperIntMedia,M1,Wm()));
+        logger.appendMessage(LOG_LEVEL, String.format("\nCALCOLA TEMPERATURA end: Temp media: %1.2f Portata %1.3f  Velocita %1.3f ",  temperIntMedia,M1,Wm()));
     }
 
    /* public double getTm() {
@@ -314,14 +316,16 @@ public   void setLogger(Mylogger logger) {
      * @param T2
      */
     public void addFluido(Fluido f2,double m2, double T2){
+		// int LOG_LEVEL=Mylogger.FINEST;
+		int LOG_LEVEL=Mylogger.OFF;
     	String message;
     	if(logger!=null){
     	String s=String.format("\n\tADDFLUIDO: ");
-    	logger.appendMessage(Mylogger.FINEST, s);
+    	logger.appendMessage(LOG_LEVEL, s);
     	s=String.format("\n\t\tFluido nel condotto PRIMA %s \n\t\t\t massa %1.3f  Temperatura %1.3f ", fluidoInt,M1,temperIntMedia);
-    	logger.appendMessage(Mylogger.FINEST, s);
+    	logger.appendMessage(LOG_LEVEL, s);
     	s=String.format("\n\t\tNuovo fluido %s \n\t\t\t portata massic %1.3f  Temperatura %1.3f ", f2,m2,T2);
-    	logger.appendMessage(Mylogger.FINEST, s);
+    	logger.appendMessage(LOG_LEVEL, s);
     }
     	double Mtot =M1+m2;
         // se masse condotti vuote allora non fare nulla
@@ -346,17 +350,17 @@ public   void setLogger(Mylogger logger) {
         Tfu0 = Tfu0 / (M1 + m2);
         double cpU =FluidoU.CapTerm(Tfu0);
         if(logger!=null){
-        	logger.appendMessage(Mylogger.FINEST,String.format("\n\t\tFluido in uscita %s", FluidoU));
+        	logger.appendMessage(LOG_LEVEL,String.format("\n\t\tFluido in uscita %s", FluidoU));
         	message=String.format("\n\t\t calore specifico fluido interno cp1 %1.1f "
         			+ "calore specifico fluido  aggiunto cp2 %1.1f calore specifico fluido in uscita cpu %1.1f", cp1,cp2,cpU);
-        	logger.appendMessage(Mylogger.FINEST,message);
+        	logger.appendMessage(LOG_LEVEL,message);
         }
         double tfu = 0;
         do {
         	 if(logger!=null){
              	message=String.format("\n\t\t calore specifico fluido interno cp1 %1.1f "
              			+ "calore specifico fluido  aggiunto cp2 %1.1f calore specifico fluido in uscita cpu %1.1f", cp1,cp2,cpU);
-             	logger.appendMessage(Mylogger.FINEST,message);
+             	logger.appendMessage(LOG_LEVEL,message);
              }
         	tfu = (M1 * cp1 * Tf1) + (m2 * cp2 * T2);
             tfu = tfu / (Mtot * cpU);
@@ -377,7 +381,7 @@ public   void setLogger(Mylogger logger) {
         fluidoInt=FluidoU;
         if(logger!=null){
         String s=String.format("\n\t\t dopo somma:\n\t\t fluido %s \n\t\t massa %1.3f  Temperatura %1.3f ", fluidoInt,M1,temperIntMedia);
-    	logger.appendMessage(Mylogger.FINEST, s);
+    	logger.appendMessage(LOG_LEVEL, s);
         }
         CalcolaTemper();
         return;
