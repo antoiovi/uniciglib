@@ -133,7 +133,8 @@ logger.appendMessage(REPORT,message);
 		//maria = 0;
 		
 	 eseguiCalcolo(PMAX);
-	 
+	 /* ***02/2018 	 
+
 	 Miscela fumouscita=(Miscela)condotto.getFluidoI();
 	 double fraz_mol_h20=fumouscita.getFrazioneMolare(h20);
 	double fraz_mol_o2= fumouscita.getFrazioneMolare(o2);
@@ -141,9 +142,15 @@ logger.appendMessage(REPORT,message);
 	 logger.appendMessage(Mylogger.INFO, frazmol);
 	 double pressParzVapore=fumouscita.PressioneParzial(h20, Patm);
 	 logger.appendMessage(Mylogger.INFO,String.format(">\nPressione parziale vapore fumi uscita camino %1.4f", pressParzVapore));
+	 
+	 
+	 ***/
 	 /**
 	  * VERIFICHE
 	  */
+	  
+	  
+	  /* ***02/2018 	 
 	 tpu_temper_par_U=verificaTemperatura();
 	 logger.appendMessage(REPORT,String.format("\n%-35s\t%1.3f","Temperatura parete uscita camino",tpu_temper_par_U));
 	 
@@ -159,7 +166,7 @@ logger.appendMessage(REPORT,message);
 				+ "\n\t Area %f\tVelocita %f \t Velocita minima %f ",msgcond,condotto.Area(), condotto.Wm(),vel_min_cond));
 	 logger.appendMessage(Mylogger.INFO, String.format(
 				"\n Verifca velocità fumi canale da fumo:\t %s \n\tArea %f\tVelocita %f \t Velocita minima %f ",msgcan, canale.Area(),canale.Wm(),vel_min_can)); 
-	
+	****/
 	 
 	 // canale.MaIntTir(csi_int_tir, csi_presa_ar, area_int_tir, area_presa);
 	}// calcola();
@@ -175,9 +182,10 @@ logger.appendMessage(REPORT,message);
 		 calcolaTemperature(TIPO, ta);
 		 logger.appendMessage(REPORT,"\n"+ outDataCondotti());
 		 logger.appendMessage(REPORT, String.format("\nCALCOLO CON TEMPERATURA AMBIENTE %1.3f",ta));
-		 logger.appendMessage(REPORT,"\n"+ outData());
+		  logger.appendMessage(REPORT,"\n"+ outData());
 		 logger.appendMessage(REPORT,"\n"+ outDataFumi());
 		 logger.appendMessage(REPORT,"\n"+ outDataFluidi(ta));
+	 
 		 double kp=condotto.getK();
 			double ai=condotto.getCoefLiminI();
 			double Tfup=condotto.Tu();
@@ -187,13 +195,14 @@ logger.appendMessage(REPORT,message);
 		 calcolaTemperature(TIPO, 293.0);
 		 logger.appendMessage(REPORT, String.format("\nCALCOLO CON TEMPERATURA AMBIENTE %1.3f PER VERIFICA PRESSIONI",293.0));
 		 logger.appendMessage(REPORT,"\n"+ outData());
-		 logger.appendMessage(REPORT,"\n"+ outDataFumi());
+	  logger.appendMessage(REPORT,"\n"+ outDataFumi());
 		 logger.appendMessage(REPORT,"\n"+ outDataFluidi(293.0));
 		   kp=condotto.getK();
 			  ai=condotto.getCoefLiminI();
 			  Tfup=condotto.Tu();
 			  tpu_temper_par_U=Tfup-(Tfup-293.0)*kp/ai;
 			  logger.appendMessage(REPORT,String.format("\n%-35s\t%1.1f  [K] \t%1.1f [°C]","Temperatura parete uscita camino",tpu_temper_par_U,(tpu_temper_par_U - 273.0)));
+ 
 	}
 	
 	private void calcolaTemperature(int calcolo,double temperaturaambiente){
@@ -212,29 +221,43 @@ logger.appendMessage(REPORT,message);
 		}
 		maria = 0;
 		
-
-	
+		// 02/2018
+		logger.appendMessage(REPORT,"\n  calcolaTemperature()");
+		
 		
 	 double peff_prev=0;
 	 maria=caldaia.getPortatfumiPmax()*0.1;
+	 logger.appendMessage(REPORT, String.format("\nMassa aria  %1.3f",maria));
+ 
 	 for(int count=0;count<100 ;count++){
-		 logger.appendMessage(Mylogger.INFO, "\n>Iterazione numero:"+count);
-		 logger.appendMessage(Mylogger.INFO, "\n >Canale :calcolo termico ");
+		 static final int LOG_LEVEL=REPORT;
+		 //static final int LOG_LEVEL=Mylogger.INFOT;
+		 logger.appendMessage(LOG_LEVEL, "\n>Iterazione numero:"+count);
+		 logger.appendMessage(LOG_LEVEL, "\n >Canale :calcolo termico ");
+		 
+		 
 		 canale.setData(Patm, portatafumo, temper_int,
 				 temperfumo, fumo);
 		
 		canale.addFluido(aria, maria, temper_int);
-		logger.appendMessage(Mylogger.INFO,
+		logger.appendMessage(LOG_LEVEL,
 				String.format( "\n >Aggiunto massa aria al canle. \tportata massica aria %1.4f [kg/s] temperatura %1.2f  ", maria,temper_int));
-		logger.appendMessage(Mylogger.INFO,"\n\t Canale "+FormatOutputUtility.printTemperData(canale));
-		logger.appendMessage(Mylogger.INFO, "\n >Condotto :calcolo termico ");
+		logger.appendMessage(LOG_LEVEL,"\n\t Canale "+FormatOutputUtility.printTemperData(canale));
+		logger.appendMessage(LOG_LEVEL, "\n >Condotto :calcolo termico ");
 		
 		condotto.setData(Patm, canale.M1(), temperaturaambiente, canale.Tu(), canale.fl_int());
 		
 		
 		logger.appendMessage(Mylogger.INFO, "\n > Condotto: calcola pressioni:");
+		logger.appendMessage(Mylogger.GRAVE, "\n TEST LOG GRAVE:");
+		
+		
+	 
+		
 		//condotto.Calcola_d_P();// Calcola perdite statiche e concentrate
 	//	ps_cond = condotto.Ps(1);// calcola la pressione statica 
+		
+		 
 		logger.appendMessage(Mylogger.INFO, "\n \t > calcola perdita di carico comignolo:");
 		dp_com = condotto.d_P(csi_comign);
 		
@@ -243,6 +266,10 @@ logger.appendMessage(REPORT,message);
 		dp_con=condotto.d_P();
 		
 		logger.appendMessage(Mylogger.INFO, "\n > Canale: calcola pressioni:");
+		 
+		
+		
+		/**********************************************************
 		//canale.Calcola_d_P();
 		peff_ca_base = canale.Peff(peff_cond);// Chiama calcola d_P()
 		//peff_ca=canale.Peff(0);// Chiama calcola d_P()
@@ -259,9 +286,13 @@ logger.appendMessage(REPORT,message);
 			break;
 		}
 		peff_prev=peff_ca_base;
+		******************************************/
+		
+		
 	/*	logger.appendMessage(Mylogger.INFO, String.format(
 				"\n PRESSIONE EFFETTIVA CONDOTTO %1.3f  Differenze rispetto a iterazione precedente =%1.3f", peff_ca_base,peff_ca_base-peff_prev));
 	 */
+	 /**************************
 		logger.appendMessage(Mylogger.INFO, String.format("\n > Calcolo aria parassita...." ));
 		maria = presaaria.MaIntTir(peff_ca_base, portatafumo,
 				Patm, temper_int);
@@ -270,8 +301,11 @@ logger.appendMessage(REPORT,message);
 					"\n Massa aria parassita < 0 ...modificre parametri" ));
 			return;
 		}
+	 
+	 ********************/
+	  
 	 }// ciclo iterazione
-	
+ 
 	}
 	
 	private double temperaturaAmbiente(){
@@ -333,8 +367,9 @@ logger.appendMessage(REPORT,message);
 		
 		return strbuild.toString();	
 	}
+	
 	String outDataFumi(){
-		Miscela fumou=(Miscela) condotto.getFluidoI();
+	/*	Miscela fumou=(Miscela) condotto.getFluidoI();
 		Miscela fumoc=  (Miscela) caldaia.getFumoPmax();
 		
 		StringBuilder strbuild=new StringBuilder();
@@ -346,9 +381,12 @@ logger.appendMessage(REPORT,message);
 		.append(String.format("\n%-10s\t%10.2f %%\t%10.2f %%","CO2",fumoc.getFrazioneMolare(co2)*100,fumou.getFrazioneMolare(co2)*100))
 		.append(String.format("\n%-10s\t%10.2f %%\t%10.2f %%","H2O",fumoc.getFrazioneMolare(h20)*100,fumou.getFrazioneMolare(h20)*100));
 		return strbuild.toString();	
+		*/
+		return "Out data fumi..";
 	}
 	
 	String outDataFluidi(double temperaria){
+		/**
 		Miscela right=(Miscela) condotto.getFluidoI();
 		Miscela left=  (Miscela) caldaia.getFumoPmax();
 		double temper1=caldaia.getTempFumiPmax();
@@ -362,9 +400,12 @@ logger.appendMessage(REPORT,message);
 		.append(String.format("\n%-35s\t%10.2e\t%10.2e\t%10.2e","Conducibilità termica",left.CondicTermica(temper1),right.CondicTermica(temper2),aria.CondicTermica(temperaria)))
 		.append(String.format("\n%-35s\t%10.2e\t%10.2e\t%10.2e","Viscosità dinamica ",left.ViscositaDinamica(temper1),right.ViscositaDinamica(temper2),aria.ViscositaDinamica(temperaria)));
 		return strbuild.toString();	
+		**/
+		return "Out data fluidi..";
 	}
 	
 	String outData(){
+		/**
 		CondottoBase left=condotto;
 		CondottoBase right=canale;
 		VelocitaFluido vfco=condotto.getVelocitaFluido();
@@ -395,7 +436,8 @@ logger.appendMessage(REPORT,message);
 		.append(String.format("\nTemperaturi uscita fumi [K]            \t%10.0f\t%10.0f", vtncco.getTfu(),vtncca.getTfu()));
 	
 		return strbuild.toString();
-	
+	***/
+		return "Out data ..";
 	}
 	
 public void setLogger(Mylogger logger) {
