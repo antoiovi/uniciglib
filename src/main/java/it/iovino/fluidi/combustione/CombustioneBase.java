@@ -5,7 +5,20 @@ import it.iovino.fluidi.AzotoN2;
 import it.iovino.fluidi.Fluido;
 import it.iovino.fluidi.OssigenoO2;
 import it.iovino.fluidi.VaporeH2O;
-
+/**
+*   
+*  Contine tutte le proprietà che vengono calcolate nelle sue implementazioni e i loro getters.
+*	<p> Contiene anche funzioni di servizio basiche.
+*   <p> implementa anche in modo standard <br>
+*		Combustione.TemperaturaFumiPmax(double rend) e <br>
+*		Combustione.TemperaturaFumiPmin(double rend) <br>
+*	Implementa :{@link it.iovino.fluidi.combustione.Combustione}	<br>
+*   Classi che la estendono  : {@link it.iovino.fluidi.combustione.CombustioneMetano}	<br>
+*	@author Antonello iovino
+*   @version 1.0
+*	@see CombustioneMetano
+*	@see Combustione
+**/
 public abstract class CombustioneBase implements Combustione {
 protected Fluido o2= OssigenoO2.getInstance();
 protected Fluido co2= AnidrideCO2.getInstance();
