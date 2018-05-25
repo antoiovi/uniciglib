@@ -127,7 +127,7 @@ Mylogger logger=   Emptylog.getInstance();
         }
             }
     /**
-     * Creo la miscela passando una lista di coppie <massa-fluido>
+     * Creo la miscela passando una lista di coppie <moli-fluido>
      *
      * @param pair_moli_fluido
      * @paran mm è inserito solo per permettere un costruttore diverso
