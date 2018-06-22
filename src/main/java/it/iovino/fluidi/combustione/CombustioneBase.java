@@ -35,6 +35,17 @@ protected double n2_perc_umida;
 protected double n2_perc_secca;
 protected double h2o_perc;
 
+// xxx_percM_xxx  percentuali MASSICHE
+protected double co2_percM_secca;
+protected double co2_percM_umida;
+protected double o2_percM_secca;
+protected double o2_percM_umida;
+protected double n2_percM_umida;
+protected double n2_percM_secca;
+protected double h2o_percM;
+
+
+
 protected  double volumi_h20;
 protected double volumi_co2;
 protected double volumi_o2;
@@ -181,6 +192,35 @@ return 293.15+C_fatt_calc_temp_min*(1-rend)*1000 ;
 		return potenza;
 	}
 
+	// Percentuali massiche
+	public double getH2o_percM() {
+		return h2o_percM;
+	}
+	
+	public double getCo2_percM_secca() {
+		return co2_percM_secca;
+	}
+	public double getCo2_percM_umida() {
+		return co2_percM_umida;
+	}
+
+	public double getO2_percM_secca() {
+		return o2_percM_secca;
+	}
+
+	public double getO2_percM_umida() {
+		return o2_percM_umida;
+	}
+
+	public double getN2_percM_umida() {
+		return n2_percM_umida;
+	}
+
+	public double getN2_percM_secca() {
+		return n2_percM_secca;
+	}
+
+	
 	
 	
 }

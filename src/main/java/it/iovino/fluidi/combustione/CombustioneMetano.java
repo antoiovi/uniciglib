@@ -7,6 +7,16 @@ import it.iovino.fluidi.Fluido;
 import it.iovino.fluidi.Miscela;
 import it.iovino.fluidi.PairMoliFluido;
 
+/**
+ *	Tutte le proprietà sono nella classe astratta {@link it.iovino.fluidi.combustione.CombustioneBase}
+ *
+ *  @author antoiovi
+ *  @version 1.0
+ *	@see Combustione
+ *	@see CombustioneBase
+ *			
+ */
+
 public class CombustioneMetano extends CombustioneBase {
 
 	public CombustioneMetano(){
@@ -92,7 +102,15 @@ public class CombustioneMetano extends CombustioneBase {
 		
 		h2o_perc=volumi_h20/volumi_fumo_totali;
 				
-		fumo=new Miscela(listmoli,0);/**
+		 Miscela m=new Miscela(listmoli,0);
+		 fumo=m;
+		// Estraggo le percentuali massiche
+		co2_percM_umida=m.getFrazionePonderale(co2);
+		o2_percM_umida=m.getFrazionePonderale(o2);
+		n2_percM_umida=m.getFrazionePonderale(n2);
+		h2o_percM=m.getFrazionePonderale(h20);
+		 
+		/*
 		 * Calcola portata massica fumi Portata massica =densita x portata volumetrica
 		 */
 		this.portata_mass_fumi=volumi_fumo_totali*fumo.MassaVolumica(PressioneNormale, TemperaturaNormale);

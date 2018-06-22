@@ -21,7 +21,7 @@
 			   <directory>src/main/java</directory>
 			   <excludes>
 				   <exclude>
-					   *.java
+					   **/*.java
 				   </exclude>
 			   </excludes>
 
@@ -31,16 +31,19 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
+		
+		<configuration>
           <archive>
-
              <manifest>
                 <addClasspath>true</addClasspath>
                 <classpathPrefix>lib/</classpathPrefix>
 			   </manifest>
 			</archive>
-			</configuration>
-		 </plugin> 
+			<excludes>
+				<exclude>**/*.java</exclude>
+			</excludes>
+		</configuration>
+	 </plugin> 
    </plugins>
    </build>
     </project>
