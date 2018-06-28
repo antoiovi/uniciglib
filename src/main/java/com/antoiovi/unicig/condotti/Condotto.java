@@ -1,86 +1,216 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.antoiovi.unicig.condotti;
-
-import it.iovino.fluidi.Fluido;
-
+import com.antoiovi.unicig.tubi.*;
+import com.antoiovi.unicig.fluidi.*;
+import com.antoiovi.unicig.Formule;
+ 
 /**
- *Interfaccia condotto 
  * @author antoiovi
  */
-public interface Condotto {
-    public void CalcolaTemper();
-    // Somma le masse dei fluidi e crea la temperatura di ingresso, ed il fluido di ingresso
-    public void Somma(Condotto c1,Condotto c2);
-    // Pone i dati di c1 di uscita in ingresso 
-    public void Serie(Condotto c1);
-    // Imposta la massa
-    public void setM1(double M1);
-    // Reucper al aporatat massica [kg/s]
-    public double M1();
-    // ottiene la velocità media [m/s]
-    public double Wm();
-    public double getWm();
-    // Ottine  la temperatura media
-    public double Ti();
-    // Ottine  la temperatura media
-    public double Tm();
-    // Ottine la tempertura di uscita
-    public double Tu();
-    // Ottine la pressione statica (B = +1 o -1)
-    public double Ps(double B);
-    /**
-     * 
-     * @return Pressione statica 
-     */
-    public double getPs();
-    // Pressione effettiva: calcolata in base alle pressioni dei 
-    // condotti superiori; se sopra ho solo un comignolo metto la perdita del comignlo 
-    // in negativo
-    public double Peff(double PressStatSup);
-    // Restituisce la pressone effettiva, già calcolata
-    public double Peff();
-    // Calcola le perdie di carico
-    public double Calcola_d_P();
-    public double d_P();
-    //restitusisce una perdita di carico in baese ad una csi 
-    public double d_P(double csi);
-    // MassaVolumica, DENSITA'
-    public double ro_m();
-    // fLUIDO INTERNO, E FLUIDO ESTERNO: NEI CONDOTTI NON COASSIALI FLUIDO INTERNO
-    // E fLUIDO ESTERNO è L'AMBIENTE;
-    public void setFluidoI(Fluido fluidoi,double m2, double T2);
-    public Fluido fl_int();
-    public Fluido fl_est();
-    // Imposta altezza: se = >= lunghezza tubo condotto verticale e altezza= sviluppo tubo
-    // se =0 tubo orizzontale 
-    public void setH(double h);
-    public double H(); // Altezza (differenza di altitudine), per sviluppo vedere lunghezza tubo
-    // Lunghezza(=uguale a lunghezza tubo)
-    public double Lung();
-    // Portata aria interruttore tiraggio
-    @Deprecated
-    public double getMa();
-    // Calcola e restituisce massa aria interruttore tiraggio
-    @Deprecated
-    public double MaIntTir(double csi_i,double csi_d,double Ai,double Ad);
-    // Aggiunge un fluido con massa mw e temp T2 , ricalocla la temperatura
-    public void addFluido(Fluido f2,double m2, double T2);
-    // UTILIZZATI PER CONDOTTI COASSIALI
-    // imposta il fluido interno e ricalcola temperature
+public class Condotto {
+	
+	Tubo tubo;
+	Fluido fluido;
+	
+	double tempInput;
+	double portataMassica;
+	
+	double csi=0.0; // Perdote di carico concentrate
+	
+	double coeffLimEsterno;
+		
+	double temperaturaMedia;
+	double temperaturaUscita;
+	
+	double velMedia;
+	double numeroReynolds;
+	double fattattrLiscio;
+	double fattattrRuvido;
+ 	double numeroNusselt;
+	double coeffLiminInterno;
+	double coeffglobalescambterm;
+	double fattoreraffreddamento;
+	
+	
+	
+	double SH=0.5;// Usato per coefficiente globale di scambio termico
+	double SE=1.2; // Usato per le perdite di carico
+	double epsilon=0.000001; // Precisione minima usato in calcola temperatura
+	
+	double altezza;
+
+	public Condotto(Tubo _tubo,Fluido _fluido, double _portatamassica,double _coeffLimEsterno){
+		this.tubo=_tubo;
+		this.altezza=tubo.getLunghezza();
+		this.fluido=_fluido;
+		this.portataMassica=_portatamassica;
+		coeffLimEsterno=_coeffLimEsterno;
+		
+ 	}
+	
+	
+	
+/**
+* @param Pressione : pressone del fluido interno; se calcolo tiraggio uso pressione atmosferica;
+*
+**/
+	public void Calcolatemperature(double Tinput,double Testerna,double pressione_){
+		double diamIdr=tubo.Dh_int();
+		double diamIdrE=tubo.Dh_est();
+		double perimetro=tubo.Per_int();
+		double lunghezza=tubo.getLunghezza();
+		double area=tubo.Area_int();
+		double scabrRel=tubo.getRugosita()/tubo.Dh_int();
+		double resTerm=tubo.getResistenzaTermica();
+		double capTerm;
+		double condTerm;
+		double massaVol;
+		double viscCin;
+		
+		double tempEsterna=Testerna;
+		tempInput=Tinput;
     
-    public double Area();
-    public double Dh();
-    public String Forma();
-    
-    Condotto condottoi();
-    Condotto condottoe();
-    @Deprecated
-	double getMassvolumaria();
-    
-    
+		temperaturaMedia=0.9*Tinput;
+		fluido.setPressione(pressione_);
+		double temperaturaMedia_1=temperaturaMedia;
+		fluido.setTemperatura(temperaturaMedia);
+        do{
+			
+			 capTerm=fluido.CapTerm();
+			 condTerm=fluido.CondicTermica();
+			 massaVol=fluido.MassaVolumica();
+			 viscCin=fluido.ViscCin();
+			
+			velMedia= portataMassica /(massaVol* area);
+			numeroReynolds=diamIdr* velMedia /viscCin;
+			fattattrLiscio=Formule.FattAttrLiscio(numeroReynolds, scabrRel);
+			fattattrRuvido=Formule.FattAttrRuvido(numeroReynolds, scabrRel);
+			numeroNusselt=Formule.NumeroNusselt(fattattrLiscio,fattattrRuvido,numeroReynolds);
+			
+			coeffLiminInterno= (condTerm*numeroNusselt/diamIdr)<5?5:(condTerm*numeroNusselt/diamIdr);
+			
+			coeffglobalescambterm=SH*Formule.coeffGlobaleScambioTermico(coeffLiminInterno,coeffLimEsterno, diamIdr,diamIdrE,resTerm);	
+			//Fattore di raffreddamento formula 24
+			double	KR =Formule.fattoreRaffreddamento( coeffglobalescambterm,  perimetro, lunghezza,  portataMassica,capTerm);
+			// Temperatura uscita caso non coassiale, formula 26
+			temperaturaUscita = tempEsterna + (tempInput - tempEsterna) * Math.exp(-1 * KR);
+			// Temperatura media nel condotto caso non coassiale formula 29
+			temperaturaMedia  =    tempEsterna +( tempInput- tempEsterna)*(1-Math.exp(-1 * KR))/KR;
+			fluido.setTemperatura(temperaturaMedia);
+			double deltaT= temperaturaMedia_1-temperaturaMedia;
+				if (deltaT<epsilon)
+					break;
+				temperaturaMedia_1=temperaturaMedia;
+		}while(true);
+}
+ 
+   
+     
+  
+	public double perditediCarico(){
+		return SE*(perditediCaricoLin()+perditediCaricoConc());
+	}
+	
+	/**
+	*  Formula di Darcy
+	**/
+	public double perditediCaricoLin(){
+		return  0.5 * fluido.MassaVolumica() * Math.pow(velMedia, 2)*(fattattrRuvido*tubo.getLunghezza()/tubo.Dh_int());
+	}
+	
+	public double perditediCaricoConc(){
+		return 0.5 * fluido.MassaVolumica() * Math.pow(velMedia, 2) * csi;
+	}
+	/*********
+	* Se Altezza Ã¨ negativa; il carico statico sarÃ  negativo (ovvero in discesa)
+	************/
+	public double caricoStatico(){
+		return 9.81*altezza*fluido.MassaVolumica();
+	}
+ 
+ /***********************************************************************
+ *		SETTERS e GETEERS PROPRIETA
+ ***********************************************************************/
+  public void setFluido(Fluido fluido){  this.fluido=fluido;  }
+  public Fluido getFluido(){return this.fluido;}
+  public void setTubo(Tubo _tubo){this.tubo=_tubo;}
+  public Tubo getTubo(){return this.tubo;}
+  public void setPortatamassica(double _portatamassica){
+	  if(_portatamassica<=0.0)
+		  return;
+	  this.portataMassica=_portatamassica;}
+public double getPortatamassica(){return this.portataMassica;}
+   public void setCsi(double _csi){
+	   if(_csi<0.0)
+		   return;
+	   this.csi=_csi;
+   };
+public double getCsi(){return this.csi;}
+   public void setCoeffLimEsterno(double _coeffLimEsterno){
+	   if(_coeffLimEsterno<1.0)
+		   return;
+	   this.coeffLimEsterno=_coeffLimEsterno;
+   };
+ public double getCoeffLiminEsterno(){return this.coeffLimEsterno;}
+	/**
+	* Altezza puÃ² essere negativa; il carico statico sarÃ  negativo (ovvero in discesa)
+	**/
+	public void setAltezza(double _altezza){
+		double x=_altezza<0?-1*_altezza:_altezza;
+		if(x>tubo.getLunghezza())
+			return;
+		this.altezza=_altezza;	
+	}
+	
+	public void set_SE(double _se){
+		if(_se<=0.0)
+			return;
+		this.SE=_se;
+	}
+	public void set_SH(double _sh){
+		if(_sh<=0.0)
+			return;
+		this.SH=_sh;
+	}
+	
+	
+ /***********************************************************************
+ *		GETTERS VALORI CALCOLATI
+ ***********************************************************************/
+ 
+ 
+	public double getTemperaturaInput(){return tempInput;}
+	
+	public double getTemperaturaMedia(){
+	return temperaturaMedia;	
+	}
+	
+	public double getTemperaturaUscita(){
+		return temperaturaUscita;
+	}
+	    
+	
+	public double getNumeroReynolds(){
+		 return numeroReynolds ;
+	 }
+	 
+	public double getFattattrLiscio(){
+		 return  fattattrLiscio;
+	 }
+	 
+	 public double getFattattrRuvido(){
+		 return  fattattrRuvido;
+	 }
+	 public double getNumeroNusselt(){
+		 return numeroNusselt ;
+	 }
+	public double getVelMedia()	  {
+		return velMedia;
+	}	
+	
+	public double getCoeffLiminInterno(){return	coeffLiminInterno;}
+	public double getCoeffglobalescambterm(){return coeffglobalescambterm;}
+	public double getFattoreraffreddamento(){return fattoreraffreddamento;}
+	
+	
+	
 }

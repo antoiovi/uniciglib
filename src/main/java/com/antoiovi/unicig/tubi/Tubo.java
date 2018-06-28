@@ -1,45 +1,79 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 
 package com.antoiovi.unicig.tubi;
 
 /**
+*  Autore Antonell Iovino
  * Non viene definita la forma 
  * @author antoiovi
  */
-public interface Tubo {
-  public double Lung();// Sviluppo del tubo
-  public double Resterm();// Resistenza termica parete
-  public double Rug();// Rugosita
+public abstract class Tubo {
+  
+  protected double lunghezza;
+  protected double altezza;
+  protected double resistenzaTermica;
+  protected double rugosita;
+  protected double spessore;
   
   // Valori calcolati tipici della forma del tubo , vengono calcolate nelle 
   // implementazioni tipiche della forma
-  public double Dh();//Diametro idraulico
-  public double Dhe();//Diametro idraulico esterno
-  public double Spessore();  
-  public double Per_est();  
-  public double Per_int();  
-  public double Area_int();
-  public double Area_est();
-  // Metto dei setter per le propieta per potere creare un tubo indipendente dalla forma
-  // da tubi creati con forma nota, serve per creare un tubo interno ed un tubo esterno
-  // nei tubi coassiali
-  public void setDh(double dh);//Diametro idraulico
-  public void setDhe(double dhe);//Diametro idraulico esterno
-  public void setSpessore(double spess);  
-  public void setPer_est(double per_est);  
-  public void setPer_int(double per_int);  
-  public void setArea_int(double area_int);
-  public void setArea_est(double area_est);
+  public abstract double Per_est();  
+  public abstract double Per_int();  
+  public abstract double Area_int();
+  public abstract double Area_est();
   
   
+    public double Dh_int() {
+        return 4*Area_int()/Per_int();
+    }
 
-  // setter per le proprietà indipendenti dalla forma
-  public void setRug(double rugosita);
-  public void setResterm(double restermica);
-  public void setLung(double lunghezza);
+    public double Dh_est() {
+        return 4*Area_est()/Per_est();
+    }
+  
+  
+  
+  public Tubo(double lunghezza,double restermica,double rugosita){
+	  this.lunghezza=lunghezza;
+	  this.altezza=lunghezza;
+	  this.resistenzaTermica=restermica;
+	  this.rugosita=rugosita;
+  }
+  
+  public double getLunghezza(){
+	  return lunghezza;
+  }
+  public double getAltezza(){
+	  return altezza;
+  }
+  public double getResistenzaTermica(){
+	  return resistenzaTermica;
+	  
+  }
+  public double getRugosita(){
+	  return rugosita;
+  }
+  public double getSpessore(){
+	  return spessore;
+  }
+  
+  public void setLunghezza(double lunghezza){
+	  this.lunghezza=lunghezza;
+	  this.altezza=(this.lunghezza<this.altezza)?this.lunghezza:this.altezza;
+  }
+  public void setAltezza(double altezza){
+	  this.altezza=altezza;
+	  this.lunghezza=(this.altezza<this.lunghezza)?this.lunghezza:altezza;
+  }
+  
+  public void setResistenzaTermica(double resistenzaTermica){
+	  this.resistenzaTermica=resistenzaTermica;
+  }
+  public void setRugosita(double rugosita){
+	  this.rugosita=rugosita;
+  }
+  
+  public abstract void setSpessore(double spessore);
+  
   
 }
