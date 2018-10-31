@@ -33,7 +33,7 @@ void quit(){
 }
 
 void input_dati(){
-	double T_esterna=273.0+15.0;
+	double T_esterna=273.0+5.0;
 		log("Inpu dati generatore ");
 		int COMB=input_combustibile();
 		if(COMB==QUIT)
