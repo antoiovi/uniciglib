@@ -18,6 +18,7 @@ public class DemoCamino{
 
 	static final int QUIT=-1;
 
+double press_atm=101000.0;
 
 	public static void main(String[] args){
 		DemoCamino demo=new DemoCamino();
@@ -34,7 +35,7 @@ void quit(){
 
 void input_dati(){
 	double T_esterna=273.0+5.0;
-		log("Inpu dati generatore ");
+		log("Input dati generatore ");
 		int COMB=input_combustibile();
 		if(COMB==QUIT)
 				quit();
@@ -66,9 +67,10 @@ double T1=canale.getTemperaturaMedia();
 		double diamcond=input_double("Diametro interno camino [m]:");
 		TuboC tubo2=new TuboC(diamcond,diamcond+0.05,lcondot, 0.016, 0.002);
 		CondottoCamino condotto=new  CondottoCamino(tubo2,fluido, cald.portataMassicaFumi()/1000.0,1.0 );
-		condotto.Calcolatemperature(T3,T_esterna,101000.0);
+		condotto.Calcolatemperature(T3,T_esterna,press_atm);
 log("Camino : ");
 logCondotto(condotto);
+logFluidoComb(fluido);
 }
 
 
@@ -84,6 +86,34 @@ void logCondotto(CondottoCamino cond){
 	cond.getVelMedia(), cond.getNumeroReynolds(), 	 cond.getFattattrLiscio() ,  cond.getFattattrRuvido(), cond.getNumeroNusselt());
 	 log(header);
 	 log(out);
+}
+
+
+void logFluidoComb(FluidoComb flcomb){
+	log("Pparz_1= Pressione parziale H20 calcolata da Pressione aria \n"+
+			"PParz_2= Pressione parziale H20 calcolata da temperatura di rugiada\n"
+	);
+ String header=String.format("%10s|%10s|%10s|%10s|%10s|%10s|%10s|%10s|%10s|%10s|%10s|%10s|"
+ 												,"T","P","CapTerm","CondTerm","ViscDin","Pparz_1","PParz2","T_rugiada","R1","R2","TenoreH20","TenoreH20(P)");
+	String out=String.format("%10.3f|%10.3f|%10.3f|%10.3e|%10.3e|%10.3f|%10.3f|%10.3f|%10.3f|%10.3f|%10.3f|%10.3e|",
+	flcomb.getTemperatura(),
+	flcomb.getPressione(),
+
+	flcomb.CapTerm() ,
+	flcomb.CondicTermica(),
+	flcomb.ViscositaDinamica(),
+
+	flcomb.PparzialeH2o_from_Paria(),
+	flcomb.PparzialeH2o_from_Trugiada(),
+	flcomb.tempPuntoRugiada(),
+	flcomb.CostElasticita(),
+	flcomb.CostElasticita_2(),
+	flcomb.TenoreH2O(),
+	flcomb.TenoreH2O(101000.0)
+	);
+	log(header);
+	log(out);
+
 }
 
 	/*******************************************
