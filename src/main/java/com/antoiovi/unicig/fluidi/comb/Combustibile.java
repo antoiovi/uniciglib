@@ -97,7 +97,7 @@ public class Combustibile  {
 
 	/**
 	*  Formula B.4 ( cp )
-	* @param tm temperatura media fumi
+	* @param tm temperatura media fumi in Gradi Centigradi
 	* @param co2 tenore di co2% secco
 	* @return cp in J/(kgxK)
 	**/

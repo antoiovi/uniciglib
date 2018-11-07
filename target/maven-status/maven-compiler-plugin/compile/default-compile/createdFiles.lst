@@ -11,6 +11,7 @@ com/antoiovi/unicig/fluidi/comb/FluidoComb.class
 com/antoiovi/unicig/impianti/Caldaia.class
 com/antoiovi/unicig/fluidi/comb/CombustibiliFactory.class
 com/antoiovi/unicig/fluidi/AnidrideCO2.class
+com/antoiovi/unicig/fluidi/comb/Comb_1.class
 com/antoiovi/unicig/fluidi/comb/Combustibile.class
 com/antoiovi/unicig/fluidi/Miscela.class
 com/antoiovi/unicig/fluidi/Aria_base.class
@@ -22,12 +23,14 @@ demo/APCombCaldaia.class
 demo/DemoCombustibile.class
 com/antoiovi/unicig/Formule.class
 com/antoiovi/unicig/tubi/TuboR.class
+com/antoiovi/unicig/fluidi/comb/Comb_2.class
 demo/SpinnerDemo.class
 demo/DemoConsoleCondotto.class
 com/antoiovi/unicig/condotti/CondottoCamino.class
 com/antoiovi/unicig/condotti/Condotto.class
 com/antoiovi/unicig/fluidi/OssigenoO2.class
 com/antoiovi/unicig/fluidi/FluidoI.class
+com/antoiovi/unicig/impianti/Gener.class
 demo/SpinnerDemo$2.class
 demo/camino/DemoCamino.class
 com/antoiovi/unicig/fluidi/PairFluidoDouble.class

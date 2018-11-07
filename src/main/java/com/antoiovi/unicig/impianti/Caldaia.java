@@ -51,11 +51,13 @@ public class Caldaia  {
  static final int LEGNO_33   =12;
  static final int PALLET     =13;
 
+public boolean _LOG=false;
  Combustibile comb;
  int combustibile;
 double Q;
 double rend;
 double co2;
+double portatamassica;
 double tm;
 double PL; // Pressione aria esterna
 double Kf; // Kf fattore di conversione da SO2 a SO3 in % ???
@@ -85,6 +87,8 @@ boolean aria_soffiata;
 		aria_soffiata=true;
 		// Inizzializza con valori di default : Pw (tiraggio minimo),Rendimento, sigma(CO2)
 		this.InitCombustibile();
+    portatamassica= comb.portataMassicaFumi( Q,rend,co2);
+
 		PL=101000.0;
 		Kf=1;
 		 }
@@ -167,33 +171,38 @@ log("legno pallet");
 				}
 				// CO2 per combustibili liquidi utilizzo dati prospetto B.3
 				double fx1,fx2,fx3;			// DATI PROSPETTO B3
-					fx1=8.6;
-					fx2=0.078;
-					fx3=10.2;
+        fx1=11.2;
+        fx2=0.076;
+        fx3=13.2;
 
 				if(aria_soffiata){
 					if(combustibile==GAS_NAT_H || combustibile==GAS_NAT_L){
 						fx1=8.6;
 						fx2=0.078;
 						fx3=10.2;
+            log(String.format("Aria soffiata- GAS; fx1=%5.3f \t fx2=%5.3f\tfx3=%5.3f ",fx1,fx2,fx3));
 					}else if(combustibile == GAS_LIQUIDO){
 						fx1=10.0;
 						fx2=0.080;
 						fx3=11.9;
+            log(String.format("Aria soffiata - GAS LIQUIDO; fx1=%5.3f \t fx2=%5.3f\tfx3=%5.3f ",fx1,fx2,fx3));
 					}else{     // LIQUIDO
 						fx1=11.2;
 						fx2=0.076;
 						fx3=13.2;
+            log(String.format("Aria soffiata -COMB LIQUIDO; fx1=%5.3f \t fx2=%5.3f\tfx3=%5.3f ",fx1,fx2,fx3));
 					}
 				}else{  // ARIA NATURALE : SOLO gas; NON VIENE FATTO TEST SE LIQUIDO....
 					if(combustibile==GAS_NAT_H || combustibile==GAS_NAT_L){
 						fx1=5.1;
 						fx2=0.075;
 						fx3=6.0;
+            log(String.format("Aria naturale - GAS NATURALE; fx1=%5.3f \t fx2=%5.3f\tfx3=%5.3f ",fx1,fx2,fx3));
 					}else if(combustibile == GAS_LIQUIDO){
 						fx1=5.9;
 						fx2=0.079;
 						fx3=7.0;
+            log(String.format("Aria naturale - GAS LIQUIDO; fx1=%5.3f \t fx2=%5.3f\tfx3=%5.3f ",fx1,fx2,fx3));
 					}
 				}
 
@@ -247,22 +256,17 @@ public void setKf(double _Kf){
 	this.Kf=_Kf;
 }
 
-
-
-	 /***
-	 *	Metodi Wrapper di combustibile
-	 ****/
-
-	/**
-	* Formula B.1 Prospetto B1 pag 67
-	* @param Q portata termica apparecchio di riscaldamento in kW (utile)
-	* @param rend rendimento apparecchio di riscaldamento
-	* @param co2 tenore di co2% secco
-	**/
-
+/***
+* Poratata massica viene calcolata nel costruttore; posso reinizzializzarla
+* dopo con setPortatmassica
+**/
 	 public double portataMassicaFumi( ){
-		return comb.portataMassicaFumi( Q,rend,co2);
+		return portatamassica;
 	}
+
+  public void setPortatamassicaFumi(double _portatamassica){
+    this.portatamassica=_portatamassica;
+  }
 
 	/**
 	*  Formula B.3 ( R )
@@ -397,7 +401,52 @@ public void setKf(double _Kf){
   }
 
 void log(String s){
-//  System.out.println(s);
+  if(!_LOG)
+    return;
+ System.out.println(s);
+}
+void Log(String s){
+  System.out.println(s);
+}
+
+public void print(){
+
+Log(String.format("%10s %f","Pressione atmosferica",PL));
+
+  Log(String.format("%8s|%7s|%7s|%8s|%3s|"+
+                     "%10s|%10s|%10s|%12s|%10s|"+
+                     "%10s|%10s|%10s|%10s",
+                    "Q [kW]","CO2[%]","Rend","Tfumo °C","---",
+                    "PMass[g/s]","R[J/(kgK)]","Vd[N*s/m2]","Cp[J/(kg*K)]","l[W/(m*K]",
+                    "H20[%]","P H20[Pa]","Trug[°C]","Tirmin[Pa]" ));
+  Log(String.format("%8.1f|%7.2f|%7.1f|%8.1f|%3s|"+
+                    "%10.3f|%10.1f|%10.3e|%12.1f|%10.3e|"+
+                    "%10.1f|%10.1f|%10.1f|%10.1f|",
+                    Q,co2,rend,tm,"---",
+                  portatamassica,CostElasticita_1() ,viscDin(),CapTermica(),lambdaA(),
+                  TenoreH2O(),PparzialeH2o(),tempPuntoRugiada(),this.Pw
+                    ));
+}
+
+public static void printHeader(){
+  System.out.println(
+  String.format("%10s|%8s|%7s|%7s|%8s|%3s|"+
+                     "%10s|%10s|%10s|%12s|%10s|"+
+                     "%10s|%10s|%10s|%10s",
+                    "Patm[Pa]","Q [kW]","CO2[%]","Rend","Tfumo °C","---",
+                    "PMass[g/s]","R[J/(kgK)]","Vd[N*s/m2]","Cp[J/(kg*K)]","l[W/(m*K]",
+                    "H20[%]","P H20[Pa]","Trug[°C]","Tirmin[Pa]" )
+                    );
+
+}
+public void printValue(){
+  Log(String.format("%10.1f|%8.1f|%7.2f|%7.1f|%8.1f|%3s|"+
+                    "%10.3f|%10.1f|%10.3e|%12.1f|%10.3e|"+
+                    "%10.1f|%10.1f|%10.1f|%10.1f|",
+                    PL,Q,co2,rend,tm,"---",
+                  portatamassica,CostElasticita_1() ,viscDin(),CapTermica(),lambdaA(),
+                  TenoreH2O(),PparzialeH2o(),tempPuntoRugiada(),this.Pw
+                    ));
 }
 
 }

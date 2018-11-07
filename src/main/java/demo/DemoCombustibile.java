@@ -3,6 +3,7 @@ package demo;
 import com.antoiovi.unicig.Formule;
 import  com.antoiovi.unicig.fluidi.comb.*;
 import com.antoiovi.unicig.impianti.Caldaia;
+import com.antoiovi.unicig.impianti.Gener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -66,26 +67,21 @@ if(input<ALL_COMB){
 public void calc_allcomb(){
   double Q= 10.0; // kW
   double co2;// co2%
-  double tm=300;
+  double tm=200;
   double pmax; //portata massica TempFumi
   double costel;
   double capTerm;
     double rend;
-
+tm=input_double("Temperatura fumo °C");
 for(int combustibile=0;combustibile<combName.length;combustibile++){
   Combustibile comb=CombustibiliFactory.getInstance().getNewCombustibile(combustibile);
 log(String.format(" %d) Combustibile %s ",combustibile,combName[combustibile]));
 Q=10.0;
-log(String.format("%10s|%10s|%10s|%10s|%10s|%10s|%10s|%10s","PotkW","CO2%","Rend","TempFumi","---","PortMassica","CostEl","CapTerm"));
+Caldaia.printHeader();
   for(int x=0;x<10;x++){
     Q=10+20.0*x;
   Caldaia cald=new Caldaia(Q,combustibile,tm);
-  rend=cald.getRendimento();
-  co2=cald.getCO2();
-  pmax=comb.portataMassicaFumi( Q, rend, co2);
-  costel=comb.CostElasticita_1(co2);
-  capTerm=comb.CapTermica( tm, co2);
-  log(String.format("%10.3f|%10.3f|%10.3f|%10.3f|%10s|%10.3f|%10.3f|%10.3f|",Q,co2,rend,tm,"--",pmax,costel,capTerm));
+cald.printValue();
     }
   }
 }
@@ -95,7 +91,8 @@ log(String.format("%10s|%10s|%10s|%10s|%10s|%10s|%10s|%10s","PotkW","CO2%","Rend
 
 public void calc_combustibile(int combustibile){
 
-  double tm=input_double("Inserire temperatura fumi :");
+  double tm=input_double("Inserire temperatura fumi °C :");
+  double PL=101000.0;
   double Q; // kW
   double co2;// co2%
   double pmax; //portata massica TempFumi
@@ -104,41 +101,36 @@ public void calc_combustibile(int combustibile){
   double rend;
 
 
-  Combustibile comb=CombustibiliFactory.getInstance().getNewCombustibile(combustibile);
+Combustibile comb=CombustibiliFactory.getInstance().getNewCombustibile(combustibile);
 log(String.format(" %d) Combustibile %s ",combustibile,combName[combustibile]));
 Q=10.0;
-log("PortMassic = Portata massica prodotti combustione [g/s]  per usare kg/s dividere per 1000 \n"+
-    "lambdaA   = Conducibilita termica \n"+
-    "TenoreH20 = sigma(H2O) tenore del vapore acqueo nei prodotti combustione in %\n"+
-    "Pw        = tiraggio minimo");
-log(String.format("%10s|%10s|%10s|%10s|%10s|%10s|%10s|%10s|%10s|%10s|%10s|%10s|%10s",
-                  "PotkW","CO2%","Rend","TempFumi","---","PortMassic","CostEl","CapTerm","ViscDin","lambdaA","TenoreH20","ParzH20","Pw" ));
+Caldaia.printHeader();
   for(int x=0;x<10;x++){
     Q=10+20.0*x;
   Caldaia cald=new Caldaia(Q,combustibile,tm);
-  rend=cald.getRendimento();
-  co2=cald.getCO2();
-  pmax=comb.portataMassicaFumi( Q, rend, co2);
-  costel=comb.CostElasticita_1(co2);
-  capTerm=comb.CapTermica( tm, co2);
-double viscDin=cald. viscDin();
-double lambdaA=cald.lambdaA();
-
-  double tenh2o=cald.TenoreH2O();
-  double pparzh20=cald.PparzialeH2o();
-  double Trug=cald.tempPuntoRugiada();
-  double deltatstp=cald.deltaTsp();
-
-
+   cald.setPL(PL);
+   cald.printValue();
+   double deltatstp=cald.deltaTsp();
   double R2=cald.CostElasticita_2();
   cald.TenoreH2OPD();
   cald.PparzialeH2oTp();
-  cald.getRendimento();
-  cald.getCO2();
-  double pw=cald.getPW_tiraggiominimo();
-  log(String.format("%10.3f|%10.3f|%10.3f|%10.3f|%10s|%10.3f|%10.3f|%10.3f|%10s|%10.3f|%10.3f|%10.3f|%10.3f|"
-  ,Q,co2,rend,tm,"--",pmax,costel,capTerm,  viscDin,lambdaA,tenh2o,pparzh20,pw   ));
+
+ }
+
+for(int x=0;x<Comb_1.combustibile.length;x++){
+  Comb_1.print(x);
 }
+//double potenzautile,int combustibile,double tm)
+  tm=input_double("Inserire temperatura fumi °C :");
+  Q=input_double( "Inserire  potenza in      kW :");; // kW
+
+Gener gener=new Gener(Q,combustibile,tm);
+
+gener.print();
+
+Comb_2 combx=new Comb_2(combustibile,gener.getCo2(),gener.getTm());
+combx.print();
+
 
 }
 
@@ -163,7 +155,6 @@ double input_double(String prompt){
   /*******************************************
   *		LOG
   ********************************************/
-
   void log(String s){
     System.out.println(s);
   }
