@@ -132,6 +132,18 @@ Comb_2 combx=new Comb_2(combustibile,gener.getCo2(),gener.getTm());
 combx.print();
 
 
+String gen_stringHeader=gener.getStringHeader();
+String gen_stringValue=gener.getStringValue();
+log(gen_stringHeader);
+log(gen_stringValue);
+
+String comb_stringHeader=combx.getStringHeader();
+String comb_stringValue=combx.getStringValue();
+log(comb_stringHeader);
+log(comb_stringValue);
+
+
+
 }
 
 

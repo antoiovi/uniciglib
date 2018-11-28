@@ -62,6 +62,18 @@ public boolean _LOG=false;
 		double PL=101000.0;
 
 		 }
+
+     public Gener(double potenzautile,int _combustibile,double tm, boolean _aria_naturale) {
+    		this.Q		=potenzautile;
+    		 this.combustibile=_combustibile;
+    		this.tm=tm;
+    		aria_naturale=_aria_naturale;
+    		aria_soffiata=!aria_naturale;
+    		// Inizzializza con valori di default : Pw (tiraggio minimo),Rendimento, sigma(CO2)
+    		this.InitCombustibile();
+        portatamassica= Comb_1.portataMassicaFumi(combustibile, Q,rend,co2);
+    		double PL=101000.0;
+    		 }
 /**
 * Prospetto B.2
 *  Inizzializza  in base al prospetto B.2 della Norama UNI EN 13384-1 :
@@ -178,6 +190,14 @@ log("legno pallet");
 public void setTm(double _Tm){
 	this.tm=_Tm;
 }
+public void setCo2(double _Co2){
+	this.co2=_Co2;
+}
+
+public void setRend(double _rend){
+	this.rend=_rend;
+}
+
 
 
 public void setAria_naturale(){
@@ -202,6 +222,10 @@ public double getCo2(){
 
 public double getTm(){
   return this.tm;
+}
+
+public double getRend(){
+  return this.rend;
 }
 
 
@@ -233,21 +257,26 @@ printValue();
 
 }
 
-public   void printHeader(){
-
-Log(
-  String.format("%30s|%10s|%10s|%10s|%10s|%10s|%10s|%10s|%10s|",
+public String getStringHeader(){
+  return String.format("%30s|%10s|%10s|%10s|%10s|%10s|%10s|%10s|%10s|",
               "Combustibile","Q [kW]","Rend","CO2[%]","Pmass[g/s]","Tfumo °C","Tirmin[Pa]",
-              "Aria soffiata","Aria naturale")
-              );
+              "Aria soffiata","Aria naturale" );
 }
-public void printValue(){
-  Log(String.format("%30s|%10.1f|%10.1f|%10.1f|%10.4f|%10.3f|%10.3f|%10s|%10s|",
+public String getStringValue(){
+  return String.format("%30s|%10.1f|%10.1f|%10.1f|%10.4f|%10.3f|%10.3f|%10s|%10s|",
                   Comb_1.combustibile[combustibile], Q,rend,co2,
                   portatamassica, tm,Pw,
                   (aria_soffiata?"SI":"NO"),
                   (aria_naturale?"SI":"NO")
-                  ));
-                }
+                  );
+}
+
+public   void printHeader(){
+    Log(  this.getStringHeader());
+  }
+
+public void printValue(){
+      Log(this.getStringValue());
+  }
 
 }

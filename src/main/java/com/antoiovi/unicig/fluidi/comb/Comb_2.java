@@ -65,23 +65,6 @@ public void setCO2(double _CO2){
 		return nome;
 	}
 
-void log(String s){
-System.out.println(s) ;
-}
-
-public void print(){
-
-  String header1= String.format("%30s|%10s|%10s|%10s||%10s|%10s|%10s|%10s|%10s|%10s|%10s|%10s|",
-  "Combustible","Temp(°C)","Patm(Pa)","CO2%","RnoCond","Rcond","Cp[J/(kgXK)]","H2O%","PD[Pa]","Tp[°C]","dTp[K]","lA[W/(mxK)]","Vd[Nxs/m2]");
-
-  String dati=String.format("%30s|%10.3f|%10.3f|%10.3f||%10.3f|%10.3f|%10.3f|%10.3f|%10.3f|%10.3f|%10.3f|%10.3f|%10.3f|",
-    nome,temperatura,pressione,CO2,
-      CostElasticita_1(),CostElasticita_Cond(),CapTermica(),TenoreH2O(),PparzialeH2o(),
-      tempPuntoRugiada(),deltaTsp(),lambdaA(),viscDin()
-  );
-log(header1);
-log(dati);
-}
 	/**
 	* Formula B.1 Prospetto B1 pag 67
   * portata massica in g/s
@@ -134,8 +117,6 @@ public   double CapTermica(){
   public  double PparzialeH2o(){
     return Comb_1.PparzialeH2o(this.TenoreH2O(),this.pressione);
 	}
-
-
 
 	/**
 	*  Formula B.7 ( tp )
@@ -230,6 +211,38 @@ public   double CapTermica(){
 	public   double PparzialeH2O_Tr(){
 	return Comb_1.PparzialeH2o(this.tempPuntoRugiada());
 	}
+
+
+  void log(String s){
+  System.out.println(s) ;
+  }
+
+  public String getStringHeader(){
+    return String.format("%30s|%10s|%10s|%10s||%10s|%10s|%10s|%10s|%10s|%10s|%10s|%10s|%13s|%13s|",
+    "Combustible","Temp(°C)","Patm(Pa)","CO2%","RnoCond","Rcond","Cp[J/(kgXK)]","H2O%","PD[Pa]","Tp[°C]","dTp[K]","lA[W/(mxK)]","Vd[Nxs/m2]","PparzATempRug");
+  }
+  public String getStringValue(){
+    return String.format("%30s|%10.3f|%10.3f|%10.3f||%10.3f|%10.3f|%10.3f|%10.3f|%10.3f|%10.3f|%10.3f|%10.3f|%13.3f|%13.3f|",
+      nome,temperatura,pressione,CO2,
+        CostElasticita_1(),CostElasticita_Cond(),CapTermica(),TenoreH2O(),PparzialeH2o(),
+        tempPuntoRugiada(),deltaTsp(),lambdaA(),viscDin(),PparzialeH2O_Tr()
+    );
+  }
+
+
+
+  public void print(){
+    String header1= String.format("%30s|%10s|%10s|%10s||%10s|%10s|%10s|%10s|%10s|%10s|%10s|%10s|%13s|%13s|",
+    "Combustible","Temp(°C)","Patm(Pa)","CO2%","RnoCond","Rcond","Cp ","H2O%","PD[Pa]","Tp[°C]","dTp[K]","lAmbda","Vd[Nxs/m2]","PparzATempRug");
+
+    String dati=String.format("%30s|%10.3f|%10.0f|%10.3f||%10.3f|%10.3f|%10.3f|%10.3f|%10.3f|%10.3f|%10.3f|%10.3e|%13.3e|%13.3f|",
+      nome,temperatura,pressione,CO2,
+        CostElasticita_1(),CostElasticita_Cond(),CapTermica(),TenoreH2O(),PparzialeH2o(),
+        tempPuntoRugiada(),deltaTsp(),lambdaA(),viscDin(),PparzialeH2O_Tr()
+    );
+  log(header1);
+  log(dati);
+  }
 
 
 
