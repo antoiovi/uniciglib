@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.antoiovi.unicig.fluidi.comb.TestComb
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.165 sec - in com.antoiovi.unicig.fluidi.comb.TestComb
